@@ -8,6 +8,7 @@ export interface HistorialCertificado {
   folio: number;
 }
 
+
 export const obtenerHistorial = async (): Promise<HistorialCertificado[]> => {
   const response = await fetch(
     "https://webhook.agentecrb.com/webhook/historial-cert",

@@ -189,6 +189,11 @@ export const CertificateForm = ({ onGenerate }: CertificateFormProps) => {
     }));
   };
 
+  const getTipoParaFolio = (item: CertificateData) =>
+    item.tipoCertificado === "PROGRAMAS_TECNICO_LABORALES"
+      ? item.programaOCurso
+      : item.tipoCertificado;
+
   const procesarArchivoMasivo = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -234,7 +239,8 @@ export const CertificateForm = ({ onGenerate }: CertificateFormProps) => {
           setProgress(Math.round((i / total) * 100));
 
           try {
-            const folioData = await obtenerFolio(item.tipoCertificado);
+            
+            const folioData = await obtenerFolio(getTipoParaFolio(item));
 
             const result = await guardarCertificadoEnDrive({
               ...item,
@@ -366,7 +372,7 @@ export const CertificateForm = ({ onGenerate }: CertificateFormProps) => {
       
       const folioData = formData.folio
       ? { folio: formData.folio, libro: formData.libro! }
-      : await obtenerFolio(formData.tipoCertificado);
+      : await obtenerFolio(getTipoParaFolio(formData));
 
       setProgress(40);
 

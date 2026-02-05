@@ -163,10 +163,69 @@ export const SearchCertificates = ({ historial }: Props) => {
 
   const totalPaginas = Math.ceil(historialFiltrado.length / POR_PAGINA);
 
+
   const registrosPagina = historialFiltrado.slice(
     (pagina - 1) * POR_PAGINA,
     pagina * POR_PAGINA
   );
+
+  const [seleccionados, setSeleccionados] = useState<HistorialCertificado[]>([]);
+
+  const convertirADescargaDirecta = (url: string) => {
+    const match = url.match(/\/d\/(.*?)\//);
+    const id = match?.[1];
+
+    if (!id) return url;
+
+    return `https://drive.google.com/uc?export=download&id=${id}`;
+  };
+
+  const sleep = (ms: number) =>
+    new Promise(resolve => setTimeout(resolve, ms));
+
+  const descargarSecuencial = async () => {
+    if (seleccionados.length === 0) return;
+
+    try {
+      setLoading(true);
+
+      for (const registro of seleccionados) {
+
+        const payload = {
+          cedula: registro.cedula.toString(),
+          tipoCertificado: registro.tipo_certificado as TipoCertificado,
+          programaOCurso: registro.programa,
+        };
+
+        const result = await buscarCertificados(payload);
+
+        if (!result?.length) continue;
+
+        const url = convertirADescargaDirecta(result[0].url);
+
+        // 🔥 descarga permitida por el navegador
+        window.open(url, "_blank");
+
+        // ⏱️ delay CLAVE para evitar bloqueo
+        await sleep(3500);
+      }
+
+      toast({
+        title: "Descargas iniciadas",
+        description: "Los certificados se están descargando uno por uno.",
+      });
+
+    } catch (error) {
+      toast({
+        title: "Error en la descarga",
+        description: "Ocurrió un problema al descargar los certificados.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+      setSeleccionados([]);
+    }
+  };
 
   useEffect(() => {
     setProgramaSeleccionado("");
@@ -303,6 +362,18 @@ export const SearchCertificates = ({ historial }: Props) => {
           </CardDescription>
         </div>
 
+        {seleccionados.length > 0 && (
+          <Button
+            className="bg-[#cc0000] text-white"
+            onClick={descargarSecuencial}
+            disabled={loading}
+          >
+            {loading
+            ? "Descargando..."
+            : `Descargar certificados (${seleccionados.length})`}
+          </Button>
+        )}
+
         <Input
           placeholder="Buscar por cédula..."
           className="w-60 focus-visible:ring-[#cc0000]"
@@ -315,7 +386,8 @@ export const SearchCertificates = ({ historial }: Props) => {
       </CardHeader>
 
       <CardContent className="space-y-3">
-        <div className="grid grid-cols-[110px_120px_1.5fr_1fr_1.5fr_120px_60px] gap-2 px-3 text-xs font-semibold text-muted-foreground">
+        <div className="grid grid-cols-[40px_110px_120px_1.5fr_1fr_1.5fr_120px_60px] gap-2 px-3 text-xs font-semibold text-muted-foreground">
+        <span>Select</span>
         <span>Fecha</span>
         <span>Cédula</span>
         <span>Nombre</span>
@@ -327,64 +399,55 @@ export const SearchCertificates = ({ historial }: Props) => {
         {registrosPagina.map((item, index) => (
         <div
           key={`${item.cedula}-${index}`}
-          className="grid grid-cols-[110px_120px_1.5fr_1fr_1.5fr_120px_60px] gap-2 items-center border rounded-md p-3 text-sm"
+          className="grid grid-cols-[40px_110px_120px_1.5fr_1fr_1.5fr_120px_60px] gap-2 items-center border rounded-md p-3 text-sm"
         >
-          <span className="whitespace-nowrap">
-            {item.fecha}
-          </span>
-
-          <Button
-          variant="link"
-          className="text-[#cc0000] p-0 justify-start whitespace-nowrap"
-          onClick={async () => {
-            try {
-              const payload = {
-                cedula: item.cedula.toString(),
-                tipoCertificado: item.tipo_certificado as TipoCertificado,
-                programaOCurso: item.programa,
-              };
-
-              const result = await buscarCertificados(payload);
-
-              if (!result || result.length === 0) {
-                toast({
-                  title: "No encontrado",
-                  description: "No se encontró el certificado para esta cédula",
-                  variant: "destructive",
-                });
-                return;
+          {/* CHECKBOX */}
+          <input
+            type="checkbox"
+            checked={seleccionados.some(
+              s => s.libro === item.libro && s.folio === item.folio
+            )}
+            onChange={(e) => {
+              if (e.target.checked) {
+                setSeleccionados(prev => [...prev, item]);
+              } else {
+                setSeleccionados(prev =>
+                  prev.filter(
+                    s => !(s.libro === item.libro && s.folio === item.folio)
+                  )
+                );
               }
+            }}
+          />
 
-              // 👉 Abrir certificado en nueva pestaña
-              window.open(result[0].url, "_blank");
+          <span>{item.fecha}</span>
 
-            } catch (error) {
-              toast({
-                title: "Error",
-                description: "No se pudo abrir el certificado",
-                variant: "destructive",
-              });
-            }
-          }}
-        >
-          {item.cedula}
-        </Button>
+          {/* BOTÓN CÉDULA (sigue igual para vista individual) */}
+          <Button
+            variant="link"
+            className="text-[#cc0000] p-0 justify-start"
+            onClick={async () => {
+              try {
+                const payload = {
+                  cedula: item.cedula.toString(),
+                  tipoCertificado: item.tipo_certificado as TipoCertificado,
+                  programaOCurso: item.programa,
+                };
 
-          <span className="truncate whitespace-nowrap" title={item.nombre}>
-            {item.nombre}
-          </span>
+                const result = await buscarCertificados(payload);
+                if (!result?.length) return;
 
-          <span className="truncate whitespace-nowrap" title={item.tipo_certificado}>
-            {item.tipo_certificado}
-          </span>
+                window.open(result[0].url, "_blank");
+              } catch {}
+            }}
+          >
+            {item.cedula}
+          </Button>
 
-          <span className="truncate whitespace-nowrap" title={item.programa}>
-            {item.programa}
-          </span>
-
-          <span className="whitespace-nowrap">
-            L{item.libro} - F{item.folio}
-          </span>
+          <span className="truncate" title={item.nombre}>{item.nombre}</span>
+          <span className="truncate" title={item.tipo_certificado}>{item.tipo_certificado}</span>
+          <span className="truncate" title={item.programa}>{item.programa}</span>
+          <span>L{item.libro} - F{item.folio}</span>
 
           <AlertDialog>
             <AlertDialogTrigger asChild>

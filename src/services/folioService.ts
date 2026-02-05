@@ -5,7 +5,7 @@ export interface FolioResponse {
 }
 
 export const obtenerFolio = async (
-  tipoCertificado: CertificateData["tipoCertificado"]
+  tipoCertificado: string
 ): Promise<FolioResponse> => {
   const response = await fetch(
     "https://webhook.agentecrb.com/webhook/folio/obtener",
@@ -15,14 +15,7 @@ export const obtenerFolio = async (
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        tipo_certificado:
-          tipoCertificado === "PROGRAMAS_TECNICO_LABORALES"
-            ? "PROGRAMAS_TECNICO_LABORALES"
-            : tipoCertificado === "CURSOS_CICLICOS"
-            ? "CURSOS_CICLICOS"
-            : tipoCertificado === "DIPLOMADOS"
-            ? "DIPLOMADOS"
-            : "CURSOS_EMPRESARIALES",
+        tipo_certificado: tipoCertificado, // 👈 directo, sin ifs
       }),
     }
   );

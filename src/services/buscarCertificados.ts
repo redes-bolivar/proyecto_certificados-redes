@@ -6,6 +6,7 @@ export interface CertificadoResultado {
   url: string;
 }
 
+
 export const buscarCertificados = async (
   payload: SearchFormData
 ): Promise<CertificadoResultado[]> => {
