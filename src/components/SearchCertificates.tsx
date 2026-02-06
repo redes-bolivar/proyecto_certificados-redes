@@ -398,7 +398,7 @@ export const SearchCertificates = ({ historial }: Props) => {
       </div>
         {registrosPagina.map((item, index) => (
         <div
-          key={`${item.cedula}-${index}`}
+          key={`${item.cedula}-${item.libro}-${item.folio}`}
           className="grid grid-cols-[40px_110px_120px_1.5fr_1fr_1.5fr_120px_60px] gap-2 items-center border rounded-md p-3 text-sm"
         >
           {/* CHECKBOX */}
