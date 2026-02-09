@@ -112,9 +112,11 @@ const DIPLOMADOS = [
 
 const CURSOS_EMPRESARIALES = [
   "Primeros Auxilios",
+  "Primeros Auxilios Básico",
   "Entrenamiento a Brigadas de Emergencia",
   "Entrenamiento en Reanimación Cardiopulmonar",
   "Brigadas de Evacuación",
+  "Evacuación",
   "Control y Prevención de Incendios",
   "Manejo de Crisis en Situación de Emergencia",
   "Búsqueda y Rescate",
