@@ -71,7 +71,7 @@ const CURSOS_CICLICOS = [
 
 const CURSOS_INTERNOS: Record<string, string[]> = {
   "Home Care: Entrenamiento Integral para Cuidadores Domiciliarios": [
-    "Cuidado al Adulto Mayor",
+    "Cuidado Domiciliario",
     "Desarrollo de Habilidades del Cuidador",
   ],
   "Atención Prehospitalaria": [
