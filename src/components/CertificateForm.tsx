@@ -98,7 +98,7 @@ const CURSOS_INTERNOS: Record<string, string[]> = {
     "Técnicas de Depilación",
     "Técnicas de Spa",
   ],
-  "Normativo en Salud":[
+  "Normativo en Salud": [
     "Atención Integral a Víctimas de Violencia Sexual",
     "Gestión del Duelo en el Ámbito de la Salud",
     "Humanización en los Servicios de la Salud"
@@ -107,7 +107,7 @@ const CURSOS_INTERNOS: Record<string, string[]> = {
 
 const DIPLOMADOS = [
   "Profundización en UCI para Auxiliares de Enfermería",
-  "Facturación en Salud, Glosas, y Auditoría de Cuentas" 
+  "Facturación en Salud, Glosas, y Auditoría de Cuentas"
 ];
 
 const CURSOS_EMPRESARIALES = [
@@ -130,7 +130,8 @@ const CURSOS_EMPRESARIALES = [
   "Soporte Vital Básico",
   "Soporte Vital Avanzado Con Uso del DEA",
   "Primeros Auxilios Avanzados (RCP y Camillaje)",
-  "Minas Antipersonal"
+  "Minas Antipersonal",
+  "Atención Integral de Urgencias a Víctimas de Ataque por Agentes Químicos"
 ]
 
 
@@ -151,7 +152,7 @@ export const CertificateForm = ({ onGenerate }: CertificateFormProps) => {
   const [progress, setProgress] = useState(0);
   const [progressText, setProgressText] = useState("");
   const [cursoInterno, setCursoInterno] = useState("");
-  const [horasCurso, setHorasCurso] = useState< "8" | "12" | "32" | undefined >(undefined);
+  const [horasCurso, setHorasCurso] = useState<"8" | "12" | "32" | undefined>(undefined);
   const [showCodigoDialog, setShowCodigoDialog] = useState(false);
   const [codigoInstitucional, setCodigoInstitucional] = useState("");
   const [accionPendiente, setAccionPendiente] =
@@ -165,7 +166,7 @@ export const CertificateForm = ({ onGenerate }: CertificateFormProps) => {
     setHorasCurso(undefined);
   }, [formData.programaOCurso]);
 
-  
+
   const resetFlujo = () => {
     setCodigoInstitucional("");
     setAccionPendiente(null);
@@ -241,7 +242,7 @@ export const CertificateForm = ({ onGenerate }: CertificateFormProps) => {
           setProgress(Math.round((i / total) * 100));
 
           try {
-            
+
             const folioData = await obtenerFolio(getTipoParaFolio(item));
 
             const result = await guardarCertificadoEnDrive({
@@ -273,14 +274,14 @@ export const CertificateForm = ({ onGenerate }: CertificateFormProps) => {
           title: "Proceso completado",
           description: `Se generaron ${total} certificados`,
 
-          
+
         });
-        
+
         const zipBlob = await zip.generateAsync({ type: "blob" });
         saveAs(zipBlob, `certificados_${new Date().toISOString()}.zip`);
-        
-        try{
-            await enviarResumen({
+
+        try {
+          await enviarResumen({
             total: resumen.total,
             exitosos: resumen.exitosos,
             fallidos: resumen.fallidos,
@@ -371,10 +372,10 @@ export const CertificateForm = ({ onGenerate }: CertificateFormProps) => {
       setIsProcessing(true);
       setProgress(10);
       setProgressText("Generando 1 archivo...");
-      
+
       const folioData = formData.folio
-      ? { folio: formData.folio, libro: formData.libro! }
-      : await obtenerFolio(getTipoParaFolio(formData));
+        ? { folio: formData.folio, libro: formData.libro! }
+        : await obtenerFolio(getTipoParaFolio(formData));
 
       setProgress(40);
 
@@ -396,14 +397,14 @@ export const CertificateForm = ({ onGenerate }: CertificateFormProps) => {
         programaOCurso: programaFinal, // 👈 carpeta final
         cursoGeneral,
         horasCurso:
-        formData.tipoCertificado === "CURSOS_EMPRESARIALES"
-          ? horasCurso
-          : undefined,   
+          formData.tipoCertificado === "CURSOS_EMPRESARIALES"
+            ? horasCurso
+            : undefined,
         libro: folioData.libro,
         folio: folioData.folio,
       };
 
-      
+
       const result = await guardarCertificadoEnDrive({
         ...dataConFolio,
         codigoInstitucional,
@@ -411,35 +412,35 @@ export const CertificateForm = ({ onGenerate }: CertificateFormProps) => {
 
       setProgress(90);
 
-       if (result.response.status === "ok") {
+      if (result.response.status === "ok") {
         setProgress(100);
-          toast({
-            title: "Certificado guardado",
-            description: "El certificado fue almacenado en Google Drive",
-          });
-          //onGenerate([dataConFolio]); // Solo se ejecuta si todo salió bien
-          resetFlujo();
-        } else {
-          await disminuirFolio(formData.tipoCertificado);
-          toast({
-            title: "Error",
-            description: result.response.mensaje || "No se pudo guardar el certificado",
-            variant: "destructive",
-          });
-        }
-
-        //onGenerate([dataConFolio]);
-      } catch (error) {
+        toast({
+          title: "Certificado guardado",
+          description: "El certificado fue almacenado en Google Drive",
+        });
+        //onGenerate([dataConFolio]); // Solo se ejecuta si todo salió bien
+        resetFlujo();
+      } else {
+        await disminuirFolio(formData.tipoCertificado);
         toast({
           title: "Error",
-          description: "No se pudo generar o guardar el certificado",
+          description: result.response.mensaje || "No se pudo guardar el certificado",
           variant: "destructive",
         });
-      } finally {
-        setIsProcessing(false);
-        setProgress(0);
-        setProgressText("");
       }
+
+      //onGenerate([dataConFolio]);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "No se pudo generar o guardar el certificado",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessing(false);
+      setProgress(0);
+      setProgressText("");
+    }
 
     setFormData({
       nombreCompleto: "",
@@ -452,12 +453,12 @@ export const CertificateForm = ({ onGenerate }: CertificateFormProps) => {
 
   const opcionesPrograma =
     formData.tipoCertificado === "PROGRAMAS_TECNICO_LABORALES"
-    ? PROGRAMAS_TECNICOS
-    : formData.tipoCertificado === "CURSOS_CICLICOS"
-    ? CURSOS_CICLICOS
-    : formData.tipoCertificado === "CURSOS_EMPRESARIALES"
-    ? CURSOS_EMPRESARIALES
-    : DIPLOMADOS;
+      ? PROGRAMAS_TECNICOS
+      : formData.tipoCertificado === "CURSOS_CICLICOS"
+        ? CURSOS_CICLICOS
+        : formData.tipoCertificado === "CURSOS_EMPRESARIALES"
+          ? CURSOS_EMPRESARIALES
+          : DIPLOMADOS;
 
   const validarRegistro = (row: any): CertificateData | null => {
     const registro: CertificateData = {
@@ -686,23 +687,23 @@ export const CertificateForm = ({ onGenerate }: CertificateFormProps) => {
           </div>
 
           {formData.tipoCertificado === "CURSOS_CICLICOS" &&
-          CURSOS_INTERNOS[formData.programaOCurso] && (
-            <div>
-              <Label>Curso específico *</Label>
-              <select
-                className="w-full border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#cc0000]"
-                value={cursoInterno}
-                onChange={(e) => setCursoInterno(e.target.value)}
-              >
-                <option value="">Seleccione un curso</option>
-                {CURSOS_INTERNOS[formData.programaOCurso].map((curso) => (
-                  <option key={curso} value={curso}>
-                    {curso}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
+            CURSOS_INTERNOS[formData.programaOCurso] && (
+              <div>
+                <Label>Curso específico *</Label>
+                <select
+                  className="w-full border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#cc0000]"
+                  value={cursoInterno}
+                  onChange={(e) => setCursoInterno(e.target.value)}
+                >
+                  <option value="">Seleccione un curso</option>
+                  {CURSOS_INTERNOS[formData.programaOCurso].map((curso) => (
+                    <option key={curso} value={curso}>
+                      {curso}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
           {formData.tipoCertificado === "CURSOS_EMPRESARIALES" && (
             <div>
