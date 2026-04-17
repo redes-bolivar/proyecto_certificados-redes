@@ -131,6 +131,7 @@ const CURSOS_EMPRESARIALES = [
   "Soporte Vital Avanzado Con Uso del DEA",
   "Primeros Auxilios Avanzados (RCP y Camillaje)",
   "Minas Antipersonal",
+  "Primeros Auxilios, RCP y Camillaje",
   "Atención Integral de Urgencias a Víctimas de Ataque por Agentes Químicos"
 ]
 
