@@ -11,7 +11,7 @@ const PROGRAM_HOURS: Record<string, number> = {
   "AIEPI Comunitario": 40,
   "Profundización en UCI para Auxiliares de Enfermería": 120,
   "Facturación en Salud, Glosas, y Auditoría de Cuentas": 120,
-  "Cuidado al Adulto Mayor": 40,
+  "Cuidado Domiciliario": 40,
   "Desarrollo de Habilidades del Cuidador": 20,
   "Primeros Auxilios Básico": 20,
   "Camillaje": 20,
@@ -40,9 +40,9 @@ export const replacePlaceholders = (
 ): string => {
 
   const horas =
-  data.tipoCertificado === "CURSOS_EMPRESARIALES"
-    ? data.horasCurso
-    : PROGRAM_HOURS[data.programaOCurso];
+    data.tipoCertificado === "CURSOS_EMPRESARIALES"
+      ? data.horasCurso
+      : PROGRAM_HOURS[data.programaOCurso];
 
   const HORAS_TEXTO = horas ? `${horas} horas` : "";
 
@@ -50,7 +50,7 @@ export const replacePlaceholders = (
 
   var tallerOCurso = ""
 
-  if (data.programaOCurso == "Soporte Vital Cardiaco Avanzado - ACLS"){
+  if (data.programaOCurso == "Soporte Vital Cardiaco Avanzado - ACLS") {
     tallerOCurso = "Taller"
   } else {
     tallerOCurso = "Curso"
@@ -98,35 +98,35 @@ export const replacePlaceholders = (
   const MES = date.toLocaleDateString("es-ES", { month: "long" });
   const ANIO = date.getFullYear().toString();
 
-const getFontSizeNombre = (texto: string): number => {
-  const BASE_SIZE = 125;
-  const MAX_LENGTH = 20;
-  const MIN_SIZE = 75;
+  const getFontSizeNombre = (texto: string): number => {
+    const BASE_SIZE = 125;
+    const MAX_LENGTH = 20;
+    const MIN_SIZE = 75;
 
-  if (texto.length <= MAX_LENGTH) return BASE_SIZE;
+    if (texto.length <= MAX_LENGTH) return BASE_SIZE;
 
-  const exceso = texto.length - MAX_LENGTH;
-  const sizeReducido = BASE_SIZE - exceso * 2;
+    const exceso = texto.length - MAX_LENGTH;
+    const sizeReducido = BASE_SIZE - exceso * 2;
 
-  return Math.max(sizeReducido, MIN_SIZE);
-};
+    return Math.max(sizeReducido, MIN_SIZE);
+  };
 
   const FONT_SIZE_NOMBRE = getFontSizeNombre(nombreCurso);
 
   const nombrePersona = data.nombreCompleto;
 
-const getFontSizePersona = (texto: string): number => {
-  const BASE_SIZE = 125;
-  const MAX_LENGTH = 20;
-  const MIN_SIZE = 80;
+  const getFontSizePersona = (texto: string): number => {
+    const BASE_SIZE = 125;
+    const MAX_LENGTH = 20;
+    const MIN_SIZE = 80;
 
-  if (texto.length <= MAX_LENGTH) return BASE_SIZE;
+    if (texto.length <= MAX_LENGTH) return BASE_SIZE;
 
-  const exceso = texto.length - MAX_LENGTH;
-  const sizeReducido = BASE_SIZE - exceso * 2;
+    const exceso = texto.length - MAX_LENGTH;
+    const sizeReducido = BASE_SIZE - exceso * 2;
 
-  return Math.max(sizeReducido, MIN_SIZE);
-};
+    return Math.max(sizeReducido, MIN_SIZE);
+  };
 
   const FONT_SIZE_PERSONA = getFontSizePersona(nombrePersona);
 
