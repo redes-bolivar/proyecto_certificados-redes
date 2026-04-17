@@ -30,8 +30,8 @@ const PROGRAM_HOURS: Record<string, number> = {
   "Técnicas de Depilación": 20,
   "Técnicas de Spa": 20,
   "Atención Integral a Víctimas de Violencia Sexual": 20,
-  "Gestión del Duelo en el Ámbito de la Salud": 20,
-  "Humanización en los Servicios de la Salud": 20
+  "Gestión del Duelo en el Ámbito de la Salud": 48,
+  "Humanización en los Servicios de la Salud": 48
 };
 
 export const replacePlaceholders = (
