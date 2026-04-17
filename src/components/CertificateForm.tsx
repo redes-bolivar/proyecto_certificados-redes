@@ -719,6 +719,7 @@ export const CertificateForm = ({ onGenerate }: CertificateFormProps) => {
                 <option value="8">8 horas</option>
                 <option value="12">12 horas</option>
                 <option value="32">32 horas</option>
+                <option value="48">32 horas</option>
               </select>
             </div>
           )}
